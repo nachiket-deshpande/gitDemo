@@ -1,0 +1,6 @@
+<apex:page showHeader="false" sidebar="false" standardController="User"
+    standardStylesheets="false">
+    <apex:form >
+        <apex:commandButton action="/apex/Profile_Personal_RelatedList_Full" value="Related List Full" />
+    </apex:form>
+</apex:page>

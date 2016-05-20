@@ -1,0 +1,88 @@
+<apex:page showHeader="false" sidebar="false" standardController="User"
+	extensions="Profile_Personal_RelatedList_Compact">
+	<script type="text/javascript"
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		window.onload = function() {
+			bindOnclickEvent();
+		}
+		function bindOnclickEvent() {
+			$(".deleteLink").click(function(event) {
+				var isDelete = confirm('Do you want to delete the record ?');
+				event.preventDefault();
+				if (isDelete) {
+					var recordId = $(this).attr("record-Id");
+					console.log('----recordId-----' + recordId);
+					deleteSobjectRecord(recordId);
+				}
+				return false;
+			});
+		}
+	</script>
+	<style>
+.classHeader {
+	font-weight: bold;
+}
+</style>
+	<apex:stylesheet value="{!$Resource.acfCommStyles}" />
+	<apex:form id="frmRelatedCompact">
+		<apex:actionFunction name="deleteSobjectRecord"
+			onComplete="bindOnclickEvent();" action="{!deleteSobjectRecord}"
+			reRender="theOutputText">
+			<apex:param name="recId" value=""
+				assignTo="{!realtedRecordIdToDelete}" />
+		</apex:actionFunction>
+		<div class="profile_page_wrapper">
+			<div class="profile_buttons">
+				<apex:outPutPanel id="editPanel">
+					<apex:outPutPanel >
+						<apex:commandButton value="Edit" action="{!EditSobjectRecord}"
+							rendered="{!!isEditMode}" reRender="frmRelatedCompact"
+							onComplete="bindOnclickEvent();" />
+					</apex:outPutPanel>
+					<apex:outputpanel id="savePanel">
+						<apex:commandButton value="Save" rendered="{!isEditMode}"
+							action="{!saveSobjectRecord}" reRender="frmRelatedCompact" />
+					</apex:outPutPanel>
+					<apex:outputpanel id="cancelPanel">
+						<apex:commandButton value="Cancel" rendered="{!isEditMode}"
+							action="{!cancel}" reRender="frmRelatedCompact" />
+					</apex:outPutPanel>
+				</apex:outPutPanel>
+			</div>
+
+
+			<apex:outputText id="theOutputText" value="{!subTabHTML}"
+				escape="false" />
+
+			<apex:outputpanel id="IdeditMode" rendered="{!isEditMode}">
+				<apex:commandButton value="Create"
+					action="{!saveSobjectRecordToList}"
+					reRender="theOutputText,IdeditMode"
+					onComplete="bindOnclickEvent();" />
+				<apex:repeat value="{!objFieldList}" var="objField" id="theReapet">
+					<apex:inputField value="{!objName[objField]}" id="theInputField" />
+				</apex:repeat>
+			</apex:outputpanel>
+
+			<div class="profile_buttons">
+				<apex:outPutPanel id="editPanel2">
+					<apex:outPutPanel >
+						<apex:commandButton value="Edit" action="{!EditSobjectRecord}"
+							rendered="{!!isEditMode}" reRender="frmRelatedCompact"
+							onComplete="bindOnclickEvent();" />
+					</apex:outPutPanel>
+					<apex:outputpanel id="savePanel1">
+						<apex:commandButton value="Save" rendered="{!isEditMode}"
+							action="{!saveSobjectRecord}" reRender="frmRelatedCompact" />
+					</apex:outPutPanel>
+					<apex:outputpanel id="cancelPanel1">
+						<apex:commandButton value="Cancel" rendered="{!isEditMode}"
+							action="{!cancel}" reRender="frmRelatedCompact" />
+					</apex:outPutPanel>
+				</apex:outPutPanel>
+			</div>
+		</div>
+
+	</apex:form>
+</apex:page>

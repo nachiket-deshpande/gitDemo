@@ -1,0 +1,4 @@
+<apex:page controller="AutoCommunityExperienceController" action="{!setRedirectTopage}">
+<apex:pageMessages />
+    <h1>This is AutoCommunityExperience page</h1>
+</apex:page>

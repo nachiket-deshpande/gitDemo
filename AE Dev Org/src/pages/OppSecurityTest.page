@@ -1,0 +1,11 @@
+<apex:page controller="OppSecurity" showHeader="false">
+Opp:<br/>
+	<apex:repeat value="{!opportunityList}" var="opp">
+        <apex:outputText value="{!opp.Name}"/><br/>
+    </apex:repeat>
+    <br/><br/>
+Str:<br/>
+    <apex:repeat value="{!opportunityStrList}" var="opp2">
+    	<apex:outputText value="{!opp2}"/><br/>
+    </apex:repeat>
+</apex:page>

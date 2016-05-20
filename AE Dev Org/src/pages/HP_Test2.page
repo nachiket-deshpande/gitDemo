@@ -1,0 +1,43 @@
+<apex:page controller="HP_Test2Controller" showHeader="true" sidebar="true">
+    This should be on the right side of the home page 
+    <link href="{!URLFOR($Resource.SF1Bootstrap, 'dist/css/bootstrap.css')}" rel="stylesheet"/>
+    
+    <style>
+        .rightPanelTextLinke{
+            height:100px; 
+            text-align: center; 
+            padding-top: 16%;
+            border:1px solid black;
+            border-radius: 5px;
+        }
+    </style>
+    
+    <!-- <div style="height:100%;">
+        <table height="100%" width="100%" class=".col-md-12" >
+            <tr>
+                <td >
+                    <a href="#"><div class="rightPanelTextLinke">Volunteer Opportunities </div></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#"><div class="rightPanelTextLinke">Events </div></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#"><div class="rightPanelTextLinke">School Social Badges </div></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#"><div style="display: inline; height:100px; text-align: center; border-radius: 5px;">
+                        <apex:image id="theImage" value="{!imageUrl }" width="100%" height="100px" style="border-radius: 5px;" />
+                        </div>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>-->
+    
+</apex:page>

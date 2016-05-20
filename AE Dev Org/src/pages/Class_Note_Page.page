@@ -1,0 +1,148 @@
+<apex:page Controller="ClassNoteController" sidebar="false" showHeader="true">
+
+    <link rel="stylesheet" type="text/css"
+        href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"></link>
+    <apex:includeScript value="https://code.jquery.com/jquery-1.11.1.min.js" />
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" />
+    <!--     <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.js"/>  -->
+
+
+    <!--     <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" /> -->
+    <!--     <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" /> -->
+    <!--     <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.min.js" /> -->
+    <!--     <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/css/theme.blue.css" /> -->
+
+    <!--     <apex:includeScript value="{!$Resource.MultiSelectJquery}" /> -->
+    <!--     <apex:stylesheet value="{!$Resource.MultiSelectCSS}" /> -->
+
+
+    <script>
+        var j$ = jQuery.noConflict();
+        j$(document).ready(function() {
+            $('#projectTable').DataTable({
+                "searching" : false,
+                "lengthChange" : false,
+                "pageLength" : 5,
+                "info" : true
+            });
+
+            $('.table-project img').css('height', '');
+            $('.table-project img').css('width', '');
+
+            makeImgClickable();
+        });
+
+        function makeImgClickable()
+        { 
+            $('.sfdc_richtext img').each(function ()
+            {
+                var currentImage = $(this); 
+                currentImage.wrap("<a target='_blank' href='" + currentImage.attr("src") + "' />");
+            });
+
+            $('.paginate_button').each(function() {
+                $(this).click(function(){ 
+                    makeImgClickable();
+                });
+            });
+        }
+    </script>
+
+    <style>
+/*CSS to hide thedatelinkwhichappearalongDatepickerwhileusinginputfield*/
+.dateInput .dateFormat {
+    display: none !important;
+}
+
+th {
+    background: #f2f3f3 !important;
+    border: white !important;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+#displayHeader th {
+    cursor: pointer;
+}
+
+#totalDisplay {
+    background-color: #f2f3f3;
+    padding: 8px 20px;
+    margin-right: 47px;
+    float: right;
+    border-radius: 7px;
+}
+
+.tablesorter-blue th,.tablesorter-blue td {
+    border: none;
+    border-width: 0 1px 1px 0;
+    border-bottom: solid 1px #d9d9d9;
+}
+
+.bPageBlock {
+    background-color: #f8f8f8;
+    /* border-bottom: 1px solid #eaeaea; */
+    border-left: 1px solid #eaeaea;
+    border-right: 1px solid #eaeaea;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    height: 500px !important;
+}
+
+#displayRecordsTable td {
+    padding-top: 0.5%;
+}
+body .bPageBlock .pbHeader{
+    background: #002144;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+html body .bPageBlock.brandSecondaryBrd, html body .linkBar.brandSecondaryBrd, html body .bSubBlock.brandSecondaryBrd, html body #stt.brandSecondaryBrd, html body .genericTable.brandSecondaryBrd, html body .choicesBox.brandSecondaryBrd, html body .action-panel.brandSecondaryBrd, html body .zen-data.brandSecondaryBrd{
+    border-radius: 10px;
+    border-top: none;
+}
+.table-project img {
+  width: 100px !important;
+  height: auto !important;
+}
+</style>
+
+    <apex:form >
+        <apex:pageMessages />
+		<apex:outputfield value="{!communityWebContent.Page_Content__c}" />
+		
+        <!--apex:outputLabel value="{!webContent}" escape="true"/-->
+        <apex:commandbutton value="Submit a Class Note" action="{!redirectToSubmitPage}"/>
+        <apex:pageBlock title="" id="pageBlockId">
+            <div class="firstPageBlock">
+                <div class="tableContainerDiv">
+                    <apex:outputPanel id="theSalesHistoryDetailFilterPanel">
+                        <table id="projectTable" class="table-project">
+                            <thead>
+                                <tr>
+
+                                    <apex:repeat value="{!lstCustomSettingFields}" var="objField">
+                                        <td><apex:outputText value="{!objField['Label__c']}" /></td>
+                                    </apex:repeat>
+                                </tr>
+                            </thead>
+                            <apex:repeat value="{!lstClassNotes}" var="classNoteObj">
+                                <tr>
+                                    <apex:repeat value="{!lstCustomSettingFields}" var="objField">
+                                        <td>
+                                        <apex:outputField value="{!classNoteObj[objField['Field_Name__c']]}"/>
+<!--                                         <a><apex:outputField value="{!classNoteObj[objField['Field_Name__c']]}"/></a>  -->
+                                        </td>
+                                    </apex:repeat>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

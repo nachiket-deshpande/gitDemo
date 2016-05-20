@@ -1,0 +1,23 @@
+<apex:page showHeader="false" sidebar="false">
+    <link href="{!URLFOR($Resource.acfComm__SF1Bootstrap, 'dist/css/bootstrap.css')}" rel="stylesheet"/>
+    
+    <style>
+        .rightPanelTextLinke{
+            height:50px; 
+            text-align: center; 
+            padding-top: 1%;
+            border:1px solid black;
+            border-radius: 5px;
+        }
+    </style>
+    
+    <div style="height:100%;">
+        <table height="100%" width="100%" class=".col-md-12" >
+            <tr>
+                <td >
+                    <a href="#"><div class="rightPanelTextLinke">Events </div></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</apex:page>

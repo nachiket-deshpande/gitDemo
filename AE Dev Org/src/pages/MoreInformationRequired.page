@@ -1,0 +1,32 @@
+<apex:page controller="MoreInformationNeededController">
+    <center>
+        <apex:form >
+        <label>More Information Needed </label>
+            <apex:outputPanel id="wrapperMoreInfo">
+                <apex:panelGrid columns="2" style="margin-top:1em;">
+                    <apex:outputLabel value="First Name" for="firstName"/>
+                    <apex:inputText id="firstName" value="{!firstName}" label="First Name"/>
+
+                    <apex:outputLabel value="Preferred First" for="PreferredfirstName"/>
+                    <apex:inputText id="PreferredfirstName" value="{!preferredFirstName}" label="Preferred First"/>
+
+                    <apex:outputLabel value="Last Name" for="lastName"/>
+                    <apex:inputText id="lastName" value="{!lastName}" label="Last Name"/>
+
+                    <apex:outputLabel value="Former Last" for="FormerlastName"/>
+                    <apex:inputText id="FormerlastName" value="{!formerlastName}" label="Former Last"/>
+
+                    <apex:outputLabel value="Email" for="email"/>
+                    <apex:inputText id="email" value="{!email}" label="Current Email"/>
+
+                    </apex:panelGrid>
+                    <label>Student/Graduation Information</label>
+                   <br/> 
+                    <apex:inputTextarea id="graduate" value="{!GraduateInfo}" label="Text Area"/>
+                    <br/>
+                    <apex:Commandbutton value="Submit" id="btnSubmit" action="{!sendEmail}"></apex:Commandbutton>
+                    
+                    </apex:outputPanel>
+        </apex:form>
+    </center>
+</apex:page>

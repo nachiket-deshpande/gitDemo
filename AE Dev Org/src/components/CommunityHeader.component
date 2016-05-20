@@ -1,0 +1,21 @@
+<apex:component controller="CommunityHeaderController">
+ 
+	<apex:outputPanel id="ccHeaderMed" layout="block" style=" background-color:green; padding:20px;" rendered="{!userCommunity=='Med'}" >
+	 	<apex:image URL="https://acfsolutions.drupalgardens.com/sites/acfsolutions.drupalgardens.com/files/201304/acflogo.png" />
+	 	<br/><br/>
+	 	<apex:outputText value="Hello medical school student, {!userName}!" /> 
+	</apex:outputPanel>
+	
+	<apex:outputPanel id="ccHeaderLaw" layout="block" style=" background-color:red; padding:20px;" rendered="{!userCommunity=='Law'}" >
+		<apex:image URL="https://acfsolutions.drupalgardens.com/sites/acfsolutions.drupalgardens.com/files/201304/acflogo.png" />
+		<br/><br/>
+	 	<apex:outputText value="Hello law school student, {!userName}!"  />
+	</apex:outputPanel>
+	
+	<apex:outputPanel id="ccHeaderGeneral" layout="block" style=" background-color:blue; padding:20px;" rendered="{!userCommunity!='Law' && userCommunity!='Med'}" >
+	 	<apex:image URL="https://acfsolutions.drupalgardens.com/sites/acfsolutions.drupalgardens.com/files/201304/acflogo.png" />
+	 	<br/><br/>
+	 	<apex:outputText value="Hello, {!userName}!"  />
+	</apex:outputPanel>
+	
+</apex:component>

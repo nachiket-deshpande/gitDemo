@@ -1,0 +1,45 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false">
+	<apex:stylesheet value="{!URLFOR($Resource.SF1Bootstrap, 'dist/css/bootstrap.css')}"/>
+
+	<div class="page-header page-header-anchor">
+		<span class="s1icon s1icon-s-custom s1icon-lg"></span>
+		<h1>Deeplinking Test</h1>
+		<p>Testing the deeplink in SF1</p>
+	</div>
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body">
+				<fieldset>
+				    <div class="form-group">
+				      <input class="form-control" id="exampleInputEmail" placeholder="Enter email" type="text" />
+				    </div>
+				    <div class="form-group">
+				      <input class="form-control" id="exampleInputPassword" placeholder="Password" type="password" />
+				    </div>
+				    <button type="submit" class="btn btn-default">Submit</button>
+				</fieldset>
+			</div>
+		</div>
+		
+		<div class="panel">
+			<div class="panel-body">
+				<p><a href="javascript:sforce.one.navigateToSObject('005o0000001Clgr');">Law</a></p>
+			</div>
+		</div>
+		
+		<div class="panel">
+			<div class="panel-body">
+				<section class="section">
+				<h2 class="section-head" id="panelsLink">Recent Links</h2>
+				<div class="list-group">
+			      <a href="#" class="list-group-item active">Cras justo odio</a>
+			      <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+			      <a href="#" class="list-group-item">Morbi leo risus</a>
+			      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+			      <a href="#" class="list-group-item">Vestibulum at eros</a>
+			    </div>
+			    </section>
+		    </div>
+	    </div>
+	</div>
+</apex:page>

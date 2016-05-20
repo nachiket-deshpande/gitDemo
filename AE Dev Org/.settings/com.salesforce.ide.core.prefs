@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+endpointApiVersion=35.0
+endpointEnvironment=Production/Developer Edition
+endpointServer=www.salesforce.com
+httpsProtocol=true
+ideVersion=35.0
+keependpoint=false
+metadataFormatVersion=35.0
+namespacePrefix=acfComm
+packageName=unpackaged
+preferToolingDeployment=true
+projectIdentifier=IDE-5491277230063990472
+readTimeout=400
+username=siddharth@eternussolutions.com

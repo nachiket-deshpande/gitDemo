@@ -1,0 +1,116 @@
+<apex:page sidebar="false" controller="ProfileOverviewController">
+	<link
+		href="{!URLFOR($Resource.SF1Bootstrap, 'dist/css/bootstrap.css')}"
+		rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script
+		src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
+
+	<script type="text/javascript">
+		$(function() {
+		
+			$('#myTab a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+
+			$(function() {
+				$('#myTab a:last').tab('show');
+			})
+			/****/
+		console.log($(this) + "***");
+		});
+		
+		function getTabDetails(TabName){
+			console.log("***getTabDetails");
+			$(TabName).tab('show');
+		}
+	</script>
+	<style>
+body {
+	overflow-x: hidden;
+}
+
+#myTab li {
+	margin-left: 0px
+}
+
+.nav-tabs>li>a {
+	padding: 10px 10px 7px;
+}
+</style>
+	<hr />
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<!-- 				<h1>Joeuser</h1> -->
+			</div>
+			<div class="col-sm-6">
+				<a href="#" class="pull-right" style="margin-left:10%">Send Message</a> 
+				<span style="margin-left:5px"/>
+				<a href="#"
+					class="pull-right">Follow</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<!--left col-->
+				<img src="/profilephoto/005/F" />
+
+			</div>
+			<!--/col-3-->
+			<div class="col-sm-6">
+				<ul class="nav nav-tabs" id="myTab">
+					<apex:repeat value="{!ProfileSubTabList}" var="ProfileSubTab">
+						<li><a onclick="getTabDetails('{!ProfileSubTab.TabName__c}');"
+							href="{!ProfileSubTab.TabName__c}" data-toggle="tab">{!ProfileSubTab.TabName__c}</a></li>
+					</apex:repeat>
+				</ul>
+				<!-- 				<ul class="nav nav-tabs" id="myTab"> -->
+				<!-- 					<li class="active"><a href="#feed" data-toggle="tab">Feed</a></li> -->
+				<!-- 					<li><a href="#overview" data-toggle="tab">Overview</a></li> -->
+				<!-- 					<li><a href="#personal" data-toggle="tab">Personal</a></li> -->
+				<!-- 					<li><a href="#academic" data-toggle="tab">Academic</a></li> -->
+				<!-- 					<li><a href="#employment" data-toggle="tab">Employment</a></li> -->
+				<!-- 					<li><a href="#preferances" data-toggle="tab">Preferances</a></li> -->
+				<!-- 				</ul> -->
+
+				<div class="tab-content">
+					<div class="tab-pane active">
+						<div class="table-responsive">
+
+							<hr />
+
+							<div class="container">
+								<div class="tab-content">
+<!-- 								<apex:repeat value="{!ProfileSubTabList}" var="ProfileSubTab"> -->
+<!-- 								<div class="tab-pane" id="{!ProfileSubTab.TabName__c}">{!ProfileSubTab.TabName__c}</div> -->
+<!-- 								</apex:repeat> -->
+								
+									<div class="tab-pane active" id="feed">Feed content...</div>
+									<div class="tab-pane" id="overview">Overview here...</div>
+									<div class="tab-pane" id="personal">Personal...</div>
+									<div class="tab-pane" id="academic">Academic...</div>
+									<div class="tab-pane" id="employment">Employment...</div>
+									<div class="tab-pane" id="preferances">Preferances...</div>
+								</div>
+							</div>
+
+						</div>
+						<!--/table-resp-->
+					</div>
+					<!--/tab-pane-->
+				</div>
+				<!--/tab-pane-->
+			</div>
+			<!--/tab-content-->
+			<div class="col-sm-3">Followers</div>
+		</div>
+		<!--/col-6-->
+
+	</div>
+	<!--/row-->
+
+
+</apex:page>

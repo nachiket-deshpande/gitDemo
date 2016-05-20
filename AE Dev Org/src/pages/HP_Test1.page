@@ -1,0 +1,3 @@
+<apex:page showHeader="true" sidebar="true">
+	This should be in the center of the homepage
+</apex:page>

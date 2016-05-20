@@ -1,0 +1,7 @@
+<apex:page showHeader="false" standardStylesheets="false" contentType="application/json">
+{"employees":[
+    {"firstName":"John", "lastName":"Doe"},
+    {"firstName":"Anna", "lastName":"Smith"},
+    {"firstName":"Peter", "lastName":"Jones"}
+]}
+</apex:page>

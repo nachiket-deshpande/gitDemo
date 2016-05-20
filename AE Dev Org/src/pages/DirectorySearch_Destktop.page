@@ -1,0 +1,391 @@
+<apex:page showHeader="true" sidebar="false" controller="DirectorySearch">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <apex:stylesheet value="{!$Resource.acfCommStyles}" />      
+
+    <script>
+        var urlParams;
+        var currentPage;
+        var geocoder;
+        var fieldsToIgnore = [ 'image', 'attributes', 'Id' ];
+        
+        var numberOfRecordsToDisplay = 2;
+        var PerPagePagesize = 3;
+        var paginationDefaultPage = 1;
+        var paginationDefaultActivePage = 1;
+        var domainNameValue = '{!profileDomain}' + '/s/noPhoto.jpg';
+
+        $(document).ready(function() {
+
+            acfsObj.initMobile();
+
+            currentPage = 1;
+
+            acfsObj.getURLParams();
+            acfsObj.autoPagination();
+            acfsObj.enableLoading();
+
+            $("#fname").val(getURLParameter('fname'));
+            $("#lname").val(getURLParameter('lname'));
+
+            acfsObj.runSearch();
+        });
+
+        function getURLParameter(name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '='
+                    + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1]
+                    .replace(/\+/g, '%20'))
+                    || null
+        }
+
+        function actionSuccess(data) {
+            $('#mydata').html('');
+        
+            $.each(data, function(i, item) {
+                if (i < numberOfRecordsToDisplay) {
+                    var extraItems = [];
+                    fieldsToIgnore.push()
+                    $.each(item.sObj.Contact, function(fieldName, fieldValue) {
+                        if ($.inArray(fieldName, fieldsToIgnore) == -1) {
+                            extraItems[extraItems.length] = fieldValue;
+                        }
+                    });
+                    if (item.image != null) {
+                        buldContactHTML(item.sObj.Id, item.sObj.image,
+                                item.rowOne, item.rowTwo, item.rowThree,
+                                item.extra, item.socialIconURL1,
+                                item.socialIconImgURL1, item.socialIconURL2,
+                                item.socialIconImgURL2, item.socialIconURL3,
+                                item.socialIconImgURL3);
+                        //buldContactHTML(item.sObj.Id, item.sObj.image, item.sObj.fname, item.sObj.lname, extraItems);
+                    } else {
+                        buldContactHTML(item.sObj.Id, domainNameValue,
+                                item.rowOne, item.rowTwo, item.rowThree,
+                                item.extra, item.socialIconURL1,
+                                item.socialIconImgURL1, item.socialIconURL2,
+                                item.socialIconImgURL2, item.socialIconURL3,
+                                item.socialIconImgURL3);
+                        //buldContactHTML(item.sObj.Id, domainNameValue, item.sObj.fname, item.sObj.lname, extraItems);
+                    }
+                }
+
+            });
+            PaginationCalculation(paginationDefaultPage, data.length,paginationDefaultActivePage);
+        }
+
+        //Method to get Racords according to pagination logic
+        function actionSuccessPagination(data) {
+            $('#mydata').html('');
+            $.each(data, function(i, item) {
+                if (i < numberOfRecordsToDisplay) {
+                    var extraItems = [];
+                    fieldsToIgnore.push()
+                    $.each(item.sObj.Contact, function(fieldName, fieldValue) {
+                        if ($.inArray(fieldName, fieldsToIgnore) == -1) {
+                            extraItems[extraItems.length] = fieldValue;
+                        }
+                    });
+                    if (item.image != null) {
+                        buldContactHTML(item.sObj.Id, item.sObj.image,
+                                item.rowOne, item.rowTwo, item.rowThree,
+                                item.extra, item.socialIconURL1,
+                                item.socialIconImgURL1, item.socialIconURL2,
+                                item.socialIconImgURL2, item.socialIconURL3,
+                                item.socialIconImgURL3);
+                        //buldContactHTML(item.sObj.Id, item.sObj.image, item.sObj.fname, item.sObj.lname, extraItems);
+                    } else {
+                        buldContactHTML(item.sObj.Id, domainNameValue,
+                                item.rowOne, item.rowTwo, item.rowThree,
+                                item.extra, item.socialIconURL1,
+                                item.socialIconImgURL1, item.socialIconURL2,
+                                item.socialIconImgURL2, item.socialIconURL3,
+                                item.socialIconImgURL3);
+                        //buldContactHTML(item.sObj.Id, domainNameValue, item.sObj.fname, item.sObj.lname, extraItems);
+                    }
+                }
+            });
+        }//End
+
+        //Method to calculate pagesize, Next, Prev pages for pagination
+        function PaginationCalculation(pStartPage, pTotalRecords, pActivePage) {
+            //Page Size calculation
+            var numberOfPages = pTotalRecords / numberOfRecordsToDisplay;
+            if (pTotalRecords % numberOfRecordsToDisplay > 0 && numberOfPages >= 1) {
+                numberOfPages += 1;
+            }//End Page Size calculation
+    
+            var paginationString = '<ul class="pagination pagination-sm">';
+            var countPrev = 0;
+            
+            $('#PaginationData').html('');
+            if(numberOfPages > 1){
+                for ( var i = pStartPage; i <= numberOfPages; i++) {
+                    //Next Button Logic
+                    if (i == (pStartPage + PerPagePagesize)) {
+                        paginationString = paginationString
+                                + '<li id="btnList' + i + '" onClick="ApplyCss(this.id)"><a href="#" onClick="DisplayNextPage(' + i
+                                + ',' + pTotalRecords + ');">Next</a></li>';
+                        break;
+                    }//End Next Button Logic
+
+                    //Previous Button Logic
+                    if (i > PerPagePagesize && countPrev == 0) {
+                        var startPageNumber = i - PerPagePagesize;
+                        paginationString = paginationString
+                                + '<li id="btnList' + startPageNumber + '"><a href="#" onClick="DisplayPrevPage('
+                                + startPageNumber + ',' + pTotalRecords
+                                + ');">Prev</a></li>';
+                        countPrev++;
+                    }//End Previous Button Logic
+                    paginationString = paginationString
+                            + '<li id="btnList' + i + '" onClick="ApplyCss(this.id)"><a href="#" onClick="acfsObj.runSearch('
+                            + numberOfRecordsToDisplay + ',' + i + ');">' + i
+                            + '</a></li>';
+                }
+                paginationString = paginationString + '<ul>';
+                
+                //Apply Active Css on first button
+                
+                $('#PaginationData').append(paginationString);
+                ApplyCss('btnList' + pActivePage);
+            }
+            
+        }//End
+
+        function ApplyCss(listId){
+            $("li").removeClass("active");
+            $('#' + listId).addClass("active");
+        }
+        
+        //Method to calculate range of pagination buttons for Next buttons
+        function DisplayNextPage(pStartPage, pTotalRecordsToDisplay) {
+            PaginationCalculation(pStartPage, pTotalRecordsToDisplay, pStartPage);
+            acfsObj.runSearch(numberOfRecordsToDisplay, pStartPage);
+        }//End
+
+        //Method to calculate range of pagination buttons for Prev buttons
+        function DisplayPrevPage(pStartPage, pTotalRecordsToDisplay) {
+            
+            var prevRecord = (pStartPage + PerPagePagesize) - 1;
+            console.log("****prevRecord" + prevRecord);
+            PaginationCalculation(pStartPage, pTotalRecordsToDisplay, prevRecord);
+            acfsObj.runSearch(numberOfRecordsToDisplay, prevRecord);
+        }//End
+
+        function actionNotValid() {
+            $('#mydata').html('');
+        }
+
+        // function to get records based on the pagination logic
+        function actionSuccessUpdatePage(data) {
+            $.each(data, function(i, item) {
+                var extraItems = [];
+                $.each(item.sObj, function(fieldName, fieldValue) {
+                    if ($.inArray(fieldName, fieldsToIgnore) == -1) {
+                        extraItems[extraItems.length] = fieldValue;
+                    }
+                });
+                if (item.image != null) {
+                    buldContactHTML(item.sObj.Id, item.sObj.image, item.rowOne,
+                            item.rowTwo, item.rowThree, item.extra,
+                            item.socialIconURL1, item.socialIconImgURL1,
+                            item.socialIconURL2, item.socialIconImgURL2,
+                            item.socialIconURL3, item.socialIconImgURL3);
+                } else {
+                    buldContactHTML(item.sObj.Id, domainNameValue,
+                            item.rowOne, item.rowTwo, item.rowThree,
+                            item.extra, item.socialIconURL1,
+                            item.socialIconImgURL1, item.socialIconURL2,
+                            item.socialIconImgURL2, item.socialIconURL3,
+                            item.socialIconImgURL3);
+                }
+            });
+        }
+        //End
+
+        function buldContactHTML(userId, userPhoto, rowOneValue, rowTwoValue,
+                rowThreeValue, extraFields, SocialIconURL1, SocialIconImgURL1,
+                SocialIconURL2, SocialIconImgURL2, SocialIconURL3,
+                SocialIconImgURL3) {
+            //contactHTML = '<a href="'{!profileDomain}'+'/'+'userId'"><div class="ds_contact"><div class="ds_photo"><img src="'+userPhoto+'"/></div><div class="ds_row1">'+rowOneValue+'</div><div class="ds_follow"></div><div><br/><div class="ds_row2">'+rowTwoValue+'</div><br/><div class="ds_row3">'+rowThreeValue+'</div><br/><div class="ds_extras">'+extraFields+'</div><div class="clear"></div></div></a><div class="ds_socialIcons">';
+            contactHTML = '<a href="/'+userId+'"><div class="ds_contact"><div class="ds_photo"><img src="'+userPhoto+'"/></div><div class="ds_row1">'
+                    + rowOneValue
+                    + '</div><div class="ds_follow"></div><div><br/><div class="ds_row2">'
+                    + rowTwoValue
+                    + '</div><br/><div class="ds_row3">'
+                    + rowThreeValue
+                    + '</div><br/><div class="ds_extras">'
+                    + extraFields
+                    + '</div><div class="clear"></div></div></a><div class="ds_socialIcons">';
+            if (SocialIconImgURL1 != null) {
+                contactHTML = contactHTML
+                        + '<div class="ds_socialIcon"><a href="'+SocialIconURL1+'"><img src="'+SocialIconImgURL1+'"></a></div>';
+            }
+            if (SocialIconImgURL2 != null) {
+                contactHTML = contactHTML
+                        + '<div class="ds_socialIcon"><a href="'+SocialIconURL2+'"><img src="'+SocialIconImgURL2+'"></a></div>';
+            }
+            if (SocialIconImgURL3 != null) {
+                contactHTML = contactHTML
+                        + '<div class="ds_socialIcon"><a href="'+SocialIconURL3+'"><img src="'+SocialIconImgURL3+'"></a></div></div>';
+            }
+            //contactHTML = contactHTML + '<ul class="pagination pagination-sm"><li><a href="#" onClick="acfsObj.runSearch(1);">1</a></li></ul>';
+            $('#mydata').append(contactHTML);
+            //$('#mydata').append('<ul class="pagination pagination-sm"><li><a href="#" onClick="acfsObj.runSearch(1);">1</a></li></ul>');
+
+        }
+
+        acfsObj = {
+            initMobile : function() {
+                //Sophak Added for Mobile resposive.    
+                //if (navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i) != null){
+                if (navigator.userAgent.match(/Chrome/i) != null) {
+                    mobile = true;
+                    var fileref = document.createElement('script')
+                    fileref.setAttribute("type", "text/javascript")
+                    fileref
+                            .setAttribute("src",
+                                    "https://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js")
+                    document.getElementsByTagName("head")[0]
+                            .appendChild(fileref);
+                } else {
+                    mobile = false;
+                    $('body').addClass('pc');
+                }
+            },
+            autoPagination : function() {
+                $(window)
+                        .scroll(
+                                function() {
+                                    var url_Domain = '{!profileDomain}'+'/apex/DynamicQueryResultsPageJson?name=Profile&view=List&pagesize=10&pagenumber='+currentPage+'&';
+                                    
+                                    
+                                    var url_DomainName = '{!profileDomain}'+'DynamicQueryResultsPageJson?name=User&view=List&pagesize=10&pagenumber='
+                                                        + currentPage + '&';
+                                    if ($(window).scrollTop() == $(document)
+                                            .height()
+                                            - $(window).height()) {
+                                        currentPage = currentPage + 1;
+                                        //URL = acfsObj.CreateURL(url_Domain);
+                                        URL = acfsObj
+                                                .CreateURL(url_DomainName);
+                                        acfsObj.runJsonAjax(URL, "Get",
+                                                actionSuccessUpdatePage);
+                                        console
+                                                .log("*****runJson*** : "
+                                                        + acfsObj
+                                                                .runJsonAjax(
+                                                                        URL,
+                                                                        "Get",
+                                                                        actionSuccessUpdatePage));
+                                    }
+                                });
+            },
+            getURLParams : function() {
+                var match, pl = /\+/g, // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g, decode = function(s) {
+                    return decodeURIComponent(s.replace(pl, " "));
+                }, query = window.location.search.substring(1);
+
+                urlParams = {};
+                while (match = search.exec(query))
+                    urlParams[decode(match[1])] = decode(match[2]);
+
+            },
+            enableLoading : function() {
+                var $loading = $('#loadingDiv').hide();
+                $(document).ajaxStart(function() {
+                    $loading.show();
+                }).ajaxStop(function() {
+                    $loading.hide();
+                });
+            },
+            CreateURL : function(passedUrl) {
+                url = passedUrl;
+                $("#ds_inputFields input").each(function() {
+                    url = url + $(this).attr("id") + "=";
+                    url = url + $(this).val() + "&";
+                });
+                /*$("#ds_inputFields").children().children("div").each(function () {
+                    url = url + $(this).attr("id") + "=";
+                    $(this).children("div").children("div").children("input").each(function () {
+                       url = url + $(this).val() + "&";
+                    });
+                 });
+                 */
+                return encodeURI(url);
+            },
+            runJsonAjax : function(url, type, callback) {
+
+                var obj = $.ajax({
+                    type : type,
+                    url : url,
+                    success : callback,
+                    error : function(xhr, status, error) {
+                        alert(error + status + xhr);
+                    }
+                });
+
+                return obj;
+            },
+
+            validate : function() {
+                vaild = false;
+                $("#ds_inputFields input").each(function(index) {
+                    if ($(this).val() != '') {
+                        vaild = true;
+                    }
+                });
+                return vaild;
+            },
+            runSearch : function(pPageSize, pPageNumber) {
+
+                if (acfsObj.validate()) {
+                    var url_Domain = '{!profileDomain}'+'/apex/DynamicQueryResultsPageJson?name=User&pagesize=10&pagenumber=1&';
+                                    
+                                    
+                    var url_DomainName = '{!profileDomain}'+'/DynamicQueryResultsPageJson?name=User&';
+                
+                    if (pPageSize == 0) {
+                        currentPage = 1;
+                        //URL = acfsObj.CreateURL(url_Domain);
+                        URL = acfsObj
+                                .CreateURL(url_DomainName);
+                        acfsObj.runJsonAjax(URL, "Get", actionSuccess);
+                    } else {
+                        currentPage = 1;
+                        URL = acfsObj
+                                .CreateURL(url_DomainName +
+                                + 'pagesize='
+                                + pPageSize
+                                + '&pagenumber='
+                                + pPageNumber
+                                +'&');
+                        acfsObj
+                                .runJsonAjax(URL, "Get",
+                                        actionSuccessPagination);
+                    }
+
+                } else {
+                    actionNotValid();
+                }
+            }
+
+        };
+    </script>
+
+    <div id="content" class="">
+        <div class="ds_toolpanel">
+            <div id="ds_inputFields" class="ds_inputFields">
+                <apex:outputText value="{!inputFieldsHTML}" escape="false" />
+            </div>
+            <input type="button" value="Submit" onClick="acfsObj.runSearch(0,0)"></input>
+        </div>
+        <div class="ds_results">
+            <div id="mydata" class="resultsSet"></div>
+            <div id="PaginationData"></div>
+            <div></div>
+        </div>
+
+    </div>
+</apex:page>

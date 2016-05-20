@@ -1,0 +1,9 @@
+<apex:page standardController="User" extensions="PublicProfileController2" sidebar="false" showHeader="false" action="{!setPageNameToAddlContact}">
+    <!--<apex:param name="contIdParam" value="addlInfo" assignTo="{!pageName}"/> -->
+    <div id="wrapper">
+		<apex:outputPanel rendered="{!mode='view'}"><a href="google.com">Edit</a><br/></apex:outputPanel>
+		<apex:repeat value="{!fieldSetMembers}" var="f"> 
+       		<apex:outputText value="{!f.Label}" />:&nbsp;<apex:outputField value="{!c[f]}" /><br/>
+    	</apex:repeat>
+    </div>
+</apex:page>

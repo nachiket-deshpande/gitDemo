@@ -1,0 +1,103 @@
+<apex:page showHeader="false" sidebar="false" standardController="User"
+	extensions="Profile_Personal" standardStylesheets="false">
+	<script type="text/javascript"
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<style>
+.classHeader {
+	font-weight: bold;
+}
+</style>
+	<apex:stylesheet value="{!$Resource.acfCommStyles}" />
+	<apex:form id="frmSubsection">
+	<apex:pageMessages />
+		<apex:actionFunction name="refreshDiv"
+			reRender="IdeditMode, editPanel,editPanel2" />
+		<div class="profile_page_wrapper">
+			<div class="profile_buttons" id="editPanel">
+				<apex:outPutPanel id="editPanel">
+					<apex:outPutPanel >
+						<apex:commandButton id="cbEdit" value="Edit"
+							action="{!EditSobjectRecord}" rendered="{!!isEditMode}"
+							oncomplete="refreshDiv ();" />
+					</apex:outPutPanel>
+
+					<apex:outputpanel id="savePanel">
+						<apex:commandButton id="cbSave" value="Save"
+							action="{!saveSobjectRecord}" rendered="{!isEditMode}"
+							oncomplete="refreshDiv ();" />
+				</apex:outPutPanel>
+
+				<apex:outputpanel id="cancelPanel">
+					<apex:commandButton id="cbCancel" value="Cancel" reRender=""
+						action="{!cancel}" rendered="{!isEditMode}"
+						oncomplete="refreshDiv ();" />
+					</apex:outPutPanel>
+					</apex:outPutPanel>
+			</div>
+
+			<!-- 			<apex:outputText id="theOutputText" value="{!subTabHTML}" -->
+			<!-- 				escape="false" /> -->
+
+
+
+
+			<apex:outputpanel id="pageBody">
+				<apex:outputpanel id="IdeditMode">
+					<apex:repeat value="{!sectionIdToObjMap}" var="section">
+						<apex:pageBlock title="">
+							<div class="profile_section">
+								<div class="profile_header">{!section}</div>
+								<div class="profile_data">
+									<apex:repeat value="{!sectionIdToObjMap[section]}"
+										var="objRecord">
+										<apex:repeat value="{!sectionIdToFieldsMap}" var="FieldList">
+											<apex:pageBlockSection columns="2" rendered="{!isEditMode}">
+												<apex:repeat value="{!sectionIdToFieldsMap[FieldList]}"
+													var="objField">
+													<apex:inputfield value="{!objName[objField.acfComm__Field_API_Name__c]}"
+														rendered="{!!objField.acfComm__Read_Only__c}" />
+													<apex:outputfield value="{!objName[objField.acfComm__Field_API_Name__c]}"
+														rendered="{!objField.acfComm__Read_Only__c}" />
+												</apex:repeat>
+											</apex:pageBlockSection>
+											<apex:pageBlockSection columns="2" rendered="{!!isEditMode}">
+												<apex:repeat value="{!sectionIdToFieldsMap[FieldList]}"
+													var="objField">
+													<apex:outputfield value="{!objRecord[objField.acfComm__Field_API_Name__c]}"
+														rendered="{!objField.acfComm__Privacy_Field_API__c==null}" />
+												</apex:repeat>
+											</apex:pageBlockSection>
+										</apex:repeat>
+									</apex:repeat>
+								</div>
+							</div>
+						</apex:pageBlock>
+					</apex:repeat>
+					</apex:outputPanel>
+					</apex:outputPanel>
+
+
+					<div class="profile_buttons">
+						<apex:outPutPanel id="editPanel2">
+							<apex:outPutPanel >
+								<apex:commandButton id="cbEdit1" value="Edit"
+									action="{!EditSobjectRecord}" rendered="{!!isEditMode}"
+									oncomplete="refreshDiv ();" />
+							</apex:outPutPanel>
+
+							<apex:outputpanel >
+								<apex:commandButton id="cbSave1" value="Save"
+									action="{!saveSobjectRecord}" rendered="{!isEditMode}"
+									oncomplete="refreshDiv ();" />
+						</apex:outPutPanel>
+
+						<apex:outputpanel >
+							<apex:commandButton id="cbCancel1" value="Cancel"
+								action="{!cancel}" rendered="{!isEditMode}"
+								oncomplete="refreshDiv ();" />
+							</apex:outPutPanel>
+						</apex:outputpanel>
+					</div>
+		</div>
+	</apex:form>
+</apex:page>

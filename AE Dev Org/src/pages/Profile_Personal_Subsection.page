@@ -1,0 +1,102 @@
+<apex:page showHeader="false" sidebar="false" standardController="User"
+    extensions="Profile_Personal_Subsection" standardStylesheets="false">
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <style>k
+.classHeader {
+    font-weight: bold;
+}
+</style>
+<apex:stylesheet value="{!$Resource.acfCommStyles}" />
+    <apex:form id="frmSubsection">
+        <!--        <apex:actionFunction name="refreshHtml" reRender="idHtml,cbCancel,cbSave,cbEdit,IdeditMode" /> -->
+        <apex:actionFunction name="refreshDiv"
+            reRender="pageBody, editPanel, editPanel2" />
+           <apex:pageMessages />
+        <div class="profile_page_wrapper">
+            <div class="profile_buttons">
+            <apex:outPutPanel id="editPanel">
+                <apex:outPutPanel >
+                    <apex:commandButton id="cbEdit" value="Edit"
+                        action="{!EditSobjectRecord}" rendered="{!!isEditMode}"
+                        oncomplete="refreshDiv();" />
+                </apex:outPutPanel>
+                <apex:outputpanel id="savePanel">
+                    <apex:commandButton id="cbSave" value="Save"
+                        action="{!saveSobjectRecord}" rendered="{!isEditMode}"
+                        oncomplete="refreshDiv ();" />
+                </apex:outPutPanel>
+                <apex:outputpanel id="cancelPanel">
+                    <apex:commandButton id="cbCancel" value="Cancel" reRender=""
+                            action="{!cancel}" rendered="{!isEditMode}"
+                            oncomplete="refreshDiv ();" />
+                </apex:outPutPanel>
+            </apex:outPutPanel>
+            </div>
+
+            <apex:outputpanel id="pageBody">
+            <!--    <apex:outputText id="theOutputText" value="{!subTabHTML}"
+                    escape="false" rendered="{!!isEditMode}"/>-->
+
+            <apex:outputpanel id="IdeditMode">
+            <apex:repeat value="{!sectionIdToObjMap}" var="section" >
+<!--                <apex:outputpanel rendered="{!mapSectionTitlePrivacy[section]}"> -->
+                <apex:pageBlock title="">
+                    <div class="profile_section">
+                        <div class="profile_header">{!section}</div>
+                        <div class="profile_data">
+                        <apex:repeat value="{!mapSectionWithSubHeaderFields}" var="SubTitle" >
+<!--                            <apex:outputpanel rendered="{!mapSectionTitlePrivacy[SubTitle]}"> -->
+                            <div class="profile_section">
+                            <div class="profile_header"><apex:outputText value="{!SubTitle['acfComm__Title__c']}"/><apex:inputField value="{!SubTitle['acfComm__Privacy_Subsection__c']}"/></div>
+                            <div class="profile_data">
+                                <apex:pageBlockSection columns="2" rendered="{!isEditMode}">
+                                    <apex:repeat value="{!mapSectionWithSubHeaderFields[SubTitle]}" var="objField">
+                                        <apex:inputfield value="{!objName[objField.acfComm__Field_API_Name__c]}" rendered="{!!objField.acfComm__Read_Only__c}" />
+                                        <apex:inputfield id="iptPrivacy" value="{!objName[objField.acfComm__Privacy_Field_API__c]}" label=""/>
+<!--                                        <apex:outputfield value="{!objName[objField.acfComm__Field_API_Name__c]}" rendered="{!objField.acfComm__Read_Only__c}" /> -->
+<!--                                        <apex:outputText id="iptPrivacy1" value="{!objName[objField.acfComm__Privacy_Field_API__c]}"/> -->
+                                    </apex:repeat>
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection columns="2" rendered="{!!isEditMode}">
+                                    <apex:repeat value="{!mapSectionWithSubHeaderFields[SubTitle]}" var="objField">
+                                        <apex:outputfield value="{!objName[objField.acfComm__Field_API_Name__c]}"/>
+<!--                                        rendered="{!objField.acfComm__Privacy_Field_API__c==null}" -->
+                                    </apex:repeat>
+                                </apex:pageBlockSection>
+                            </div>
+                            </div>
+<!--                            </apex:outputpanel> -->
+                            
+                            
+                        </apex:repeat>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+<!--                </apex:outputpanel> -->
+            </apex:repeat>
+            </apex:outputPanel>
+            </apex:outputPanel>
+
+                <div class="profile_buttons">
+                <apex:outPutPanel id="editPanel2">
+                    <apex:outPutPanel >
+                        <apex:commandButton value="Edit"
+                            action="{!EditSobjectRecord}" rendered="{!!isEditMode}"
+                            oncomplete="refreshDiv ();" />
+                    </apex:outPutPanel>
+                    <apex:outputpanel >
+                        <apex:commandButton value="Save"
+                            action="{!saveSobjectRecord}" rendered="{!isEditMode}"
+                            oncomplete="refreshDiv ();" />
+                    </apex:outPutPanel>
+                    <apex:outputpanel >
+                            <apex:commandButton value="Cancel" reRender=""
+                                action="{!cancel}" rendered="{!isEditMode}"
+                                oncomplete="refreshDiv ();" />
+                    </apex:outPutPanel>
+                </apex:outPutPanel>
+                </div>
+        </div>
+    </apex:form>
+</apex:page>

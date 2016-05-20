@@ -1,0 +1,27 @@
+<apex:page showHeader="true" sidebar="true" docType="html-5.0" standardController="User" standardStylesheets="false" extensions="MobileCardTestController">
+    Testing Mobile Card
+    
+    <a href="javascript:sforce.one.navigateToURL('{!url_Mobile}');" target="_parent"> Click Here </a>
+    <script>
+function fnRemoveMobileCardMask(sVFpageTitle){
+    var aMasks = top.document.getElementsByClassName('mask');
+    var url_Value = '{!profileDomain}' + '/apex/Profile_Personal_V1?id=005o0000001BtzEAAS';
+    console.log('****url_Value ' + url_Value );
+    for(var i = 0; i < aMasks.length; i++){
+        if(aMasks[i].title == sVFpageTitle){
+            elClone = aMasks[i].cloneNode(true);
+            aMasks[i].parentNode.replaceChild(elClone, aMasks[i]);
+            //aMasks[i].href = "javascript:sforce.one.navigateToURL(url_Value );";
+            aMasks[i].onclick = function() { sforce.one.navigateToURL(url_Value);};
+        }
+            //aMasks[i].href = "javascript:sforce.one.navigateToURL(url_Value );";
+            //aMasks[i].style.display = 'none';
+            //aMasks[i].onclick = function() {};
+            //aMasks[i].href = "javascript:alert('hi');";
+            //aMasks[i].style.display = 'none';
+    }
+}
+
+fnRemoveMobileCardMask("MobileCardTest");
+    </script>
+</apex:page>

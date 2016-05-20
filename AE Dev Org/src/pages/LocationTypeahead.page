@@ -1,0 +1,1 @@
+<apex:page controller="LocationTypeaheadController" contentType="application/json">{!outputStr}</apex:page>

@@ -1,0 +1,271 @@
+<apex:page controller="TwoColumnController">
+    <apex:outputpanel id="pageBody">
+        <apex:repeat value="{!subSectionCustomSettings}" var="pageSection">
+            <apex:pageBlock title="">
+                <div class="profile_section">
+                    <div class="profile_header">
+<!--                        {!pageSection['acfComm__Title__c']}{!pageSection['acfComm__Help_Text__c']} -->
+
+<!--                        <apex:outputPanel -->
+<!--                            rendered="{!!isEditMode && pageSection['acfComm__Privacy_Field_API__c']!=null}"> -->
+<!--                            <div class="profile_private"> -->
+<!--                                <apex:outputField -->
+<!--                                    value="{!sectionIdToObjMap[pageSection['Id']][0][pageSection['acfComm__Privacy_Field_API__c']]}" /> -->
+<!--                                Private -->
+<!--                            </div> -->
+<!--                        </apex:outputPanel> -->
+<!--                        <apex:outputPanel -->
+<!--                            rendered="{!isEditMode && pageSection['acfComm__Privacy_Field_API__c']!=null}"> -->
+<!--                            <div class="profile_private"> -->
+<!--                                <apex:inputField -->
+<!--                                    value="{!sectionIdToObjMap[pageSection['Id']][0][pageSection['acfComm__Privacy_Field_API__c']]}" /> -->
+<!--                                Private -->
+<!--                            </div> -->
+<!--                        </apex:outputPanel> -->
+                    </div>
+<!--                    <div class="profile_data"> -->
+
+<!--                                                2 column -->
+<!--                        <apex:outputPanel -->
+<!--                            rendered="{!pageSection['acfComm__Custom_Setting_Type__c']=='2 column'}"> -->
+<!--                            <apex:variable var="obj" -->
+<!--                                value="{!sectionIdToObjMap[pageSection['Id']][0]}" /> -->
+<!--                            <apex:outputPanel -->
+<!--                                rendered="{!pageSection['acfComm__Privacy_Field_API__c']==null || (pageSection['acfComm__Privacy_Field_API__c']!=null && sectionIdToObjMap[pageSection['Id']][0][pageSection['acfComm__Privacy_Field_API__c']]==false)}"> -->
+<!--                                <apex:outputPanel rendered="{!!isEditMode}"> -->
+
+<!--                                    <apex:repeat value="{!sectionIdToFieldsMap[pageSection['Id']]}" -->
+<!--                                        var="objField"> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="1"}"> -->
+<!--                                            <div class="ps_fields" style="width: 25%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c==null || (objField.acfComm__Privacy_Field_API__c!=null && sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]==false)}" /> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="2"}"> -->
+<!--                                            <div class="ps_fields" style="width: 48%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c==null || (objField.acfComm__Privacy_Field_API__c!=null && sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]==false)}" /> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="3"}"> -->
+<!--                                            <div class="ps_fields" style="width: 73%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c==null || (objField.acfComm__Privacy_Field_API__c!=null && sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]==false)}" /> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="4"}"> -->
+<!--                                            <div class="ps_fields" style="width: 100%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c==null || (objField.acfComm__Privacy_Field_API__c!=null && sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]==false)}" /> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+
+<!--                                    </apex:repeat> -->
+
+<!--                                    <div class="clr">&nbsp;</div> -->
+<!--                                </apex:outputPanel> -->
+<!--                            </apex:outputPanel> -->
+<!--                            <apex:outputPanel rendered="{!isEditMode}"> -->
+<!--                                <apex:repeat value="{!sectionIdToFieldsMap[pageSection['Id']]}" -->
+<!--                                    var="objField"> -->
+<!--                                    <apex:outputPanel rendered="{!!objField.Read_Only__c}"> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="1"}"> -->
+<!--                                            <div class="ps_fields" style="width: 25%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data ps_edit"> -->
+<!--                                                    <apex:inputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="2"}"> -->
+<!--                                            <div class="ps_fields" style="width: 48%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data ps_edit"> -->
+<!--                                                    <apex:inputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="3"}"> -->
+<!--                                            <div class="ps_fields" style="width: 73%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data ps_edit"> -->
+<!--                                                    <apex:inputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="4"}"> -->
+<!--                                            <div class="ps_fields" style="width: 100%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data ps_edit"> -->
+<!--                                                    <apex:inputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+
+<!--                                    </apex:outputPanel> -->
+<!--                                    <apex:outputPanel rendered="{!objField.Read_Only__c}"> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="1"}"> -->
+<!--                                            <div class="ps_fields" style="width: 25%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="2"}"> -->
+<!--                                            <div class="ps_fields" style="width: 48%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="3"}"> -->
+<!--                                            <div class="ps_fields" style="width: 73%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                        <apex:outputpanel -->
+<!--                                            rendered="{!objField.acfComm__Column_Span__c =="4"}"> -->
+<!--                                            <div class="ps_fields" style="width: 100%"> -->
+<!--                                                <div class="ps_label"> -->
+<!--                                                    <apex:outputLabel -->
+<!--                                                        value="{!objField.acfComm__Field_Name__c}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_data"> -->
+<!--                                                    <apex:outputField -->
+<!--                                                        value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Field_API_Name__c]}" /> -->
+<!--                                                </div> -->
+<!--                                                <div class="ps_private"> -->
+<!--                                                    <apex:outputPanel -->
+<!--                                                        rendered="{!objField.acfComm__Privacy_Field_API__c!=null}"> -->
+<!--                                                        <apex:inputfield -->
+<!--                                                            value="{!sectionIdToObjMap[pageSection['Id']][0][objField.acfComm__Privacy_Field_API__c]}" /> Private</apex:outputPanel> -->
+<!--                                                </div> -->
+<!--                                            </div> -->
+<!--                                        </apex:outputpanel> -->
+<!--                                    </apex:outputPanel> -->
+<!--                                </apex:repeat> -->
+<!--                                <div class="clr">&nbsp;</div> -->
+<!--                            </apex:outputPanel> -->
+<!--                        </apex:outputPanel> -->
+
+                    </div>
+            </apex:pageBlock>
+        </apex:repeat>
+        </apex:outputPanel>
+
+</apex:page>

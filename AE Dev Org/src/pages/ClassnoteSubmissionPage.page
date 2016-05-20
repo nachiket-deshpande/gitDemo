@@ -1,0 +1,95 @@
+<apex:page Controller="ClassnoteSubmissionController" sidebar="false" showheader="true" tabStyle="Class_Note__tab">
+    <apex:stylesheet value="{!$Resource.acfCommStyles}" />
+<style>
+.MainDiv {
+    color: White;
+    background: #feda48;
+    padding: 20px;
+    border-radius: 10px; 
+}
+
+.HeaderDiv {
+    padding: 10px 0;
+    width: 100%;
+    border-bottom: solid 1px #fff;
+    font-size:16px;
+}
+
+.f12{font-size:14px; width:100%}
+.f14{font-size:16px; width:100%}
+.f16{font-size:18px; width:100%}
+.f18{font-size:20px; width:100%}
+
+a{
+  text-decoration: none;
+  color: white;
+}
+.btnSubmit{
+  background: #354961;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 50px;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+
+.clr{clear:both;}
+.ptb20{padding:20px 0 !important}
+
+</style>
+    
+
+<apex:stylesheet value="{!$Resource.acfCommStyles}" />
+    <apex:form >
+        <apex:pageMessages />
+
+        <div class="MainDiv">
+            <div>
+                <div class="HeaderDiv">Submit a Class Note</div>
+            
+
+                <div style="padding: 10px 0; width: 100%;">
+                    
+                    <div style="width: 49%; float:left;" >
+                        <div style="padding:20px 0">
+                            <div class="f12"><label class="commonCss ptb20">Name</label></div><div class="clr"></div>
+                            <div class="f14"><apex:outputField value="{!objectContact.name}"/></div><div class="clr"></div>
+                        </div>
+                        <div class="clr"></div>
+                            <div class="f12"> <label class="commonCss ptb20">Email</label></div><div class="clr"></div>
+                            <div class="f14"><apex:outputField value="{!objectContact.email}"/></div><div class="clr"></div>
+                    </div>
+                    
+                    <div style="width: 49%; float:right;">
+                        <div style="padding:20px 0">
+                            <div class="f12"><label  class="commonCss ptb20">Class Year</label></div><div class="clr"></div>
+                            <div class="f14"><apex:outputField value="{!objectContact.Reunion_Year__c}"/></div><div class="clr"></div>
+                        </div>
+                    </div>
+
+                </div><div class="clr"></div>
+                    <div style="margin:20px 0; height:1px; background:#fff"></div>
+                <div class="clr"></div>
+                
+                <div style="padding: 10px 0; width: 100%;">
+                    <apex:repeat value="{!lstCustomSettingFields}" var="objField">
+                        <div style="padding:3px"><label class="f12">{!objField.Label__c}</label></div><div class="clr"></div>
+                        <div class="f14" style="padding:3px">
+                        <apex:inputField style="  border-color: #7c7c7c #c3c3c3 #ddd;  border-image: none;  border-radius: 4px;  border-style: solid;  border-width: 1px;  box-shadow: 0px 1px 0px #c3c3c3 inset;  padding: 5px 8px;" value="{!classNoteObject[objField.Field_Name__c]}"
+                            rendered="{!!objField.Read_Only__c}"/>
+                        </div><div class="clr"></div>
+
+                    </apex:repeat>
+                </div>
+                <div><apex:inputFile style="width:100%" id="fileToUpload" value="{!attachment.body}" contentType="{!attachment.contentType}" filename="{!attachment.name}" /></div>
+                <div >
+                    <apex:CommandButton Style=" background: #354961;  border: none;  border-radius: 3px;  padding: 10px 50px;  color: #fff;  cursor: pointer;  margin-right: 10px;margin-top: 20px;" value="Submit" action="{!SubmitClassNote}" />
+                </div>
+                
+
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

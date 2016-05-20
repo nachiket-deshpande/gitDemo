@@ -1,0 +1,16 @@
+<apex:page >
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+ <script>
+ 	$.ajax({
+	   type: "GET",
+	   dataType: "json",
+	   url: "https://c.na17.visual.force.com/apex/HelloWorld",
+	   success: function(data){
+	     $("#data").append(data);
+	   }
+	});
+ </script>
+<div id="data">
+
+</div>
+</apex:page>

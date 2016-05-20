@@ -1,0 +1,4 @@
+<apex:page controller="PublicProfileController" sidebar="false" showHeader="false" >
+    <div>First Name: {!c.firstName}</div>
+    <div>Last Name{!c.lastName}</div>
+</apex:page>

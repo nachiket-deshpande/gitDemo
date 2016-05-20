@@ -1,0 +1,15 @@
+<apex:component controller="CommunityHeaderController">
+ 
+	<apex:outputPanel id="ccFooterMed" layout="block" style="background-color:green; padding:10px;" rendered="{!userCommunity=='Med'}" >
+	 	<apex:image URL="http://www.acfsolutions.com/sites/g/files/g547016/f/201404/certificationBanner.jpg" />
+	</apex:outputPanel>
+	
+	<apex:outputPanel id="ccFooterLaw" layout="block" style="background-color:red; padding:10px;" rendered="{!userCommunity=='Law'}" >
+	 	<apex:image URL="http://www.acfsolutions.com/sites/g/files/g547016/f/201404/certificationBanner.jpg" />
+	</apex:outputPanel>
+	
+	<apex:outputPanel id="ccFooterGeneral" layout="block" style="background-color:blue; padding:10px;" rendered="{!userCommunity!='Law' && userCommunity!='Med'}" >
+	 	<apex:image URL="http://www.acfsolutions.com/sites/g/files/g547016/f/201404/certificationBanner.jpg" />
+	</apex:outputPanel>
+	
+</apex:component>

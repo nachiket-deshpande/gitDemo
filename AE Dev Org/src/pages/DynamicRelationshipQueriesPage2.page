@@ -1,0 +1,35 @@
+<apex:page controller="DynamicRelationshipQueriesController2">
+   	
+  <apex:form >
+      
+    <apex:pageBlock title="Relationship hierarchy">
+     <apex:outputPanel >
+    	<b><apex:outputText value="Parent: " /></b>
+       	<apex:outputText value="{!parentObjectName}" />
+       	<br/><br/>
+     </apex:outputPanel>
+     <apex:outputPanel rendered="{!deepestLevel>0}">
+       	<b><apex:outputText value="Children: " /></b>
+       	<apex:outputText value="{!childrenString}" />
+       	<apex:outputText />
+       	<br/><br/>
+     </apex:outputPanel>
+     <apex:outputPanel rendered="{!deepestLevel>1}" >
+       	<b><apex:outputText value="Grandchildren: " /></b>
+       	<apex:outputText value="{!grandchildrenString}" />
+       	<apex:outputText />
+     </apex:outputPanel>   	
+    </apex:pageBlock>   
+      
+	<apex:pageBlock title="Dynamic Queries Generated">
+       	<apex:repeat value="{!queriesGenerated}" var="query">
+       		<apex:outputText value="{!query}"/><br/><br/>   
+        </apex:repeat>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Result Set">
+       	<apex:outputText value="{!jsonStr}"/>
+    </apex:pageBlock>    
+    
+  </apex:form>  
+</apex:page>

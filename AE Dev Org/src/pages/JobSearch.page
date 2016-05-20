@@ -1,0 +1,553 @@
+<apex:page showHeader="true" sidebar="false" controller="JobSearch" >
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!--<script src="https://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>-->
+    <apex:stylesheet value="{!$Resource.acfCommStyles}" />
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <style>
+        .js_result
+        {
+          border: 1px solid #B0B5B9;
+          padding: 5px;
+          color: black;
+          width: 97%;
+          display: inline-block;
+          vertical-align: top;
+          margin: 4px;
+        }
+    </style>
+    
+
+    <script>
+        var urlParams;
+        var currentPage;
+        var geocoder;
+        var fieldsToIgnore = [ 'image', 'attributes', 'Id' ];
+        Expanded = false;
+        //Get Domain name from custom setting
+        var domainNameValue = '{!profileDomain}'
+
+        //variable declaration for the pagination
+        var paginationDetails = JSON.parse('{!JsonStrPageDetails}');
+        //Get pagination details from custom  settings
+        if (paginationDetails != null) {
+            var numberOfRecordsToDisplay = paginationDetails.Per_Page_Records__c;
+            //var numberOfRecordsToDisplayExpanded = paginationDetails.Per_Page_Records__c*2;
+            var PerPagePagesize = paginationDetails.Per_Page_Pagesize__c;
+            var strSortingParam = paginationDetails.sortingParameters__c;
+        }
+        var paginationDefaultPage = 1;
+        var paginationDefaultActivePage = 1;
+        var totalPagesize = 0;
+        var totalSearchRecords;
+        var currentActivePage;
+        var optionLabelValue = {};
+
+        if(strSortingParam!=null)
+        {
+            //Sorting variables
+            var sortParamList = strSortingParam.split(",");
+        }
+
+        //preparing map for sorting label and value
+        for ( var i in sortParamList) {
+            var splitValues = sortParamList[i].split(':');
+            optionLabelValue[splitValues[0]] = splitValues[1];
+        }//End
+
+        //Set default sorting parameter value
+        for ( var i in optionLabelValue) {
+            var sortParam = optionLabelValue[i];
+            break;
+        }//End
+
+        $(document).ready(function() {
+            //console.log("***setting" + settingInfo);
+            acfsObj.initMobile();
+
+            currentPage = 1;
+
+            acfsObj.getURLParams();
+            //acfsObj.autoPagination();
+            acfsObj.enableLoading();
+
+            $(".ds_Collapsible").accordion({
+                collapsible : true,
+                active : 1,
+                icons : {
+                    "header" : "ui-icon-plusthick",
+                    "activeHeader" : "ui-icon-minusthick"
+                }
+            });
+
+            $("#title").val('*');
+            acfsObj.runSearch(0,0);
+        });
+
+        function getURLParameter(name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '='
+                    + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1]
+                    .replace(/\+/g, '%20'))
+                    || null
+        }
+
+        function sortResults() {
+            sortParam = $(".sortSearchResult").val();
+            acfsObj.runSearch(0, 0);
+        }
+
+        function actionSuccess(data) {
+            $('#ds_resultsSet').html('');
+            $('.ds_results .ds_header').remove();   
+
+            //call pagination methods
+            totalSearchRecords = data.length;
+            calculatePageSize(paginationDefaultPage,
+                    paginationDefaultActivePage);//calculate total pagesize
+            PaginationCalculation(paginationDefaultPage);       
+
+            if(Expanded==false)
+            {
+                expandBtnText = 'Expand';
+            }
+            else if(Expanded==true)
+            {
+                expandBtnText = 'Collapse';
+            }
+            $('.ds_results').prepend('<div class="ds_header"><a class="ds_expandBtn" id="ds_expandBtn">'+expandBtnText+'</a><div class="ds_restuls">'+totalSearchRecords+' Results</div></div>');
+
+            if ($(".sortSearchResult").length == 0 && data.length > 0) {
+                var sortingString = 'Sort By <select class="sortSearchResult" onchange="sortResults()">';
+                for ( var i in optionLabelValue) {
+                    sortingString = sortingString
+                            + '<option value="'+ optionLabelValue[i] +'">' + i
+                            + '</option>';
+                }
+                sortingString = sortingString + '</select>';
+                $('#ds_sort').append(sortingString);
+
+            }
+
+            $.each(data, function(i, item) {
+                if (i < numberOfRecordsToDisplay) {
+                    buldContactHTML(item.sObj.Id, item.fields);
+                }
+            });
+
+            if(Expanded==true)
+            {
+                $('.ds_results .ds_contact').addClass('ds_expanded');
+            }
+            else if(Expanded==false)
+            {
+                $('.ds_results .ds_contact').removeClass('ds_expanded');    
+            }
+            $(".ds_toolpanel").addClass("ds_resultsLeft");
+            $(".ds_results").addClass("ds_resultsRight");
+
+
+            /*$(".ds_content").toggle(function(){
+                $('.ds_results').animate({'width': '100%'},600); 
+              },function(){
+                $('.ds_results').animate({'width': '49%'},600);   
+             });*/
+            
+            if(Expanded==false)
+            {
+                $('#ds_expandBtn').click(
+                function(){
+                    Expanded = true;
+                    $('.ds_results').animate({'width': '100%'},600);
+                    $('.ds_toolpanel').hide("fast");
+                    numberOfRecordsToDisplay = numberOfRecordsToDisplay*2;
+                    acfsObj.runSearch(0,0);
+                });
+            }
+            else if(Expanded==true)
+            {
+                $('#ds_expandBtn').click(
+                function(){
+                    Expanded = false;
+                    $('.ds_results').animate({'width': '49%'},600);
+                    $('.ds_toolpanel').show(650);
+                    numberOfRecordsToDisplay = paginationDetails.Per_Page_Records__c;
+                    acfsObj.runSearch(0,0);
+                });
+            }
+        }
+
+        //Method to get Records according to pagination logic
+        function actionSuccessPagination(data) {
+            $('#ds_resultsSet').html('');
+            //$("#ds_sort").css("display", "block");
+            $.each(data, function(i, item) {
+                if (i < numberOfRecordsToDisplay) {
+                    buldContactHTML(item.sObj.Id, item.fields);
+                }
+            });
+            if(Expanded==true)
+            {
+                $('.ds_results .ds_contact').addClass('ds_expanded');
+            }
+            else if(Expanded==false)
+            {
+                $('.ds_results .ds_contact').removeClass('ds_expanded');    
+            }
+            PaginationCalculation(currentActivePage);
+        }
+
+        //method to calculate page size
+        function calculatePageSize(pStartPage, pActivePage) {
+            totalPagesize = Math.ceil(totalSearchRecords
+                    / numberOfRecordsToDisplay);
+        }//End method
+
+        //Method to dynamic creation of Next, Prev buttons
+        function PaginationCalculation(pActivePage) {
+            var paginationString = '<div class="paginationStyle" style="">';
+            var countPrev = 0;
+            var countNext = 0;
+            var startIndex;
+            $('#ds_pagination').html('');
+            $('#ds_count').html('');
+            if (totalPagesize > 1) {
+            
+                //First Button Creation
+                paginationString = paginationString
+                        + '<div class="paginationBtnWrapper"><input type="button" id="btnFirst" onClick="accessPaginationButtons(1);" value="First"></a></div>';
+                //End First Button Creation
+
+                //Previous Button Creation
+                paginationString = paginationString
+                            + '<div class="paginationBtnWrapper"><input id="btnPrev" type="button" onClick="accessPaginationButtons('
+                            + (pActivePage - 1)
+                            + ');" value="Prev"></input></div>';
+                //End Previous Button Creation
+                
+                startIndex = pActivePage - PerPagePagesize;
+
+                if (startIndex < 1) {
+                    startIndex = 1;
+                }//End If
+                else {
+                    startIndex = startIndex + 1;
+                }//End Else
+
+                for ( var i = startIndex; i < (startIndex + PerPagePagesize); i++) {
+
+                    //Pagination Buttons
+                    paginationString = paginationString
+                            + '<div class="paginationBtnWrapper"><input type="button" id="btnList'
+                            + i
+                            + '" onChange="ApplyCss(this.id)" onClick="acfsObj.runSearch('
+                            + numberOfRecordsToDisplay + ',' + i
+                            + ');" value="' + i + '"></input></div>';//End
+
+                }
+                
+                //Next Button Creation
+                paginationString = paginationString
+                            + '<div class="paginationBtnWrapper"><input id="btnNext" type="button" onChange="ApplyCss(this.id)" onClick="accessPaginationButtons('
+                            + (pActivePage + 1)
+                            + ');" value="Next"></input></div>';
+                //End Button Creation
+                
+                //Last Button Creation
+                paginationString = paginationString
+                        + '<div class="paginationBtnWrapper"><input type="button" id="btnLast" onClick="accessPaginationButtons('
+                        + totalPagesize + ');" value="Last"></input></div>';
+
+                //End Last Button Creation
+                
+                paginationString = paginationString + '</div>';
+
+                $('#ds_pagination').append(paginationString);
+                
+                //Enable/Disable button logic
+                $("#btnPrev").attr('disabled','disabled');
+                $("#btnPrev").css('background', '#dddddd');
+                $("#btnNext").attr('disabled','disabled');
+                $("#btnNext").css('background', '#dddddd');
+                
+                
+                
+                if ((pActivePage - 1) >= 1) {
+                    $("#btnPrev").removeAttr('disabled');
+                    $("#btnPrev").css('background', '#F0F0F0');
+                }//End Previous Button Logic
+                
+                if ((pActivePage + 1) <= totalPagesize) {
+                    $("#btnNext").removeAttr('disabled');
+                    $("#btnNext").css('background', '#F0F0F0');
+                    countNext++;
+                }//End Next Button Logic
+                
+                if(pActivePage == 1){
+                    $("#btnFirst").attr('disabled','disabled');
+                    $("#btnFirst").css('background', '#dddddd');
+                }
+                else{
+                    $("#btnFirst").removeAttr('disabled');
+                    $("#btnFirst").css('background', '#F0F0F0');
+                }
+    
+                if(pActivePage == totalPagesize){
+                    $("#btnLast").attr('disabled','disabled');
+                    $("#btnLast").css('background', '#dddddd');
+                }
+                else{
+                    $("#btnLast").removeAttr('disabled');
+                    $("#btnLast").css('background', '#F0F0F0');
+                }
+                
+                ApplyCss('btnList' + pActivePage);
+                displayds_count(pActivePage);
+
+            }//End If
+
+        }//End Method
+
+        //method to apply Active Css
+        function ApplyCss(listId) {
+            $(".paginationStyle").removeClass("highlightButton");
+            $('#' + listId).addClass("highlightButton");
+        }//End method
+
+        //method to display current page record count
+        function displayds_count(pCurrentPage) {
+            $('#ds_count').html('');
+            var startRecord = 1;
+            for ( var i = 1; i < pCurrentPage; i++) {
+                startRecord += numberOfRecordsToDisplay;
+            }
+            endRecord = pCurrentPage * numberOfRecordsToDisplay;
+            if (totalSearchRecords < endRecord) {
+                endRecord = totalSearchRecords;
+            }
+            var resultString = "Showing " + startRecord + "-" + endRecord
+                    + " of " + totalSearchRecords;
+            $('#ds_count').append(resultString);
+        }//End method
+
+        //Method to get records for the Next/Prev button clicks
+        function accessPaginationButtons(pStartPage) {
+            PaginationCalculation(pStartPage);
+            acfsObj.runSearch(numberOfRecordsToDisplay, pStartPage);
+        }//End method
+
+        function actionNotValid() {
+            $('#ds_resultsSet').html('');
+        }
+
+        // function to get records based on the pagination logic
+        function actionSuccessUpdatePage(data) {
+            $.each(data, function(i, item) {
+                buldContactHTML(item.sObj.Id, item.fields);
+            });
+        }//End method
+
+        /*function buldContactHTML(userId, userPhoto, userName, fieldRow,
+                listSocialIconURL) {
+
+            contactHTML = '<div class="ds_contact"><div class="ds_photo"><a href="' + domainNameValue + '/' + userId +'" target="_self"><img src="'+ userPhoto +'" alt="'+ userName + '" /></a></div><div class="ds_innerWrapper"><div class="ds_name"><a href="' + domainNameValue + '/' + userId +'" target="_self">'
+                    + userName + '</a></div><div class="ds_extras">';
+
+            //Iterate through all other Fields
+            for ( var field in fieldRow) {
+                contactHTML = contactHTML + '<div>' + fieldRow[field] + '</div>';
+            }
+            contactHTML = contactHTML + '</div><div class="ds_follow"></div><div class="socialIcons">';
+
+            //Iterate through all social icon/links
+            for ( var i in listSocialIconURL) 
+            {
+                if(listSocialIconURL[i]!='')
+                {
+                    contactHTML = contactHTML+ '<a href="'+ listSocialIconURL[i] +'"><img src="'+ i +'"/></a>';
+                }
+            }
+            
+            contactHTML = contactHTML + '</div></div><div class="clear"></div></div>';
+            $('#ds_resultsSet').append(contactHTML);
+        }*/
+        function buldContactHTML(jobId, fieldRow) {
+
+            contactHTML = '<div class="js_result">';
+
+            contactHTML = contactHTML + '<div class="js_extras">';
+
+            contactHTML = contactHTML + '<div><a href="/' + domainNameValue + '/JobDetail?id=' + jobId +'" target="_blank">'+fieldRow[0]+'</a></div>';
+
+            //Iterate through all other Fields
+            if(fieldRow.length>1)
+            { 
+                for (i = 1; i < fieldRow.length; i++) {
+                    contactHTML = contactHTML + '<div>'+fieldRow[i]+'</div>';
+                }
+            }
+            contactHTML = contactHTML + '</div><div class="clear"></div></div>';
+            $('#ds_resultsSet').append(contactHTML);
+        }
+
+        acfsObj = {
+            initMobile : function() {
+                //Sophak Added for Mobile resposive.    
+                if (navigator.userAgent
+                        .match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i) != null) {
+                    //if (navigator.userAgent.match(/Chrome/i) != null) {
+                    mobile = true;
+                    var fileref = document.createElement('script')
+                    fileref.setAttribute("type", "text/javascript")
+                    fileref
+                            .setAttribute("src",
+                                    "https://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js")
+                    document.getElementsByTagName("head")[0]
+                            .appendChild(fileref);
+                } else {
+                    mobile = false;
+                    $('body').addClass('pc');
+                }
+            },
+            autoPagination : function() {
+                $(window)
+                        .scroll(
+                                function() {
+                                    if ($(window).scrollTop() == $(document)
+                                            .height()
+                                            - $(window).height()) {
+                                        currentPage = currentPage + 1;
+                                        //URL = acfsObj.CreateURL('https://communityacc-developer-edition.na17.force.com' + domainNameValue +'/apex/DynamicQueryResultsPageJson?name=Profile&view=List&pagesize=10&pagenumber='+currentPage+'&');
+                                        URL = acfsObj
+                                                .CreateURL(domainNameValue + 'DynamicQueryResultsPageJson?name=Job&view=List&pagesize=10&pagenumber='
+                                                        + currentPage + '&');
+                                        acfsObj.runJsonAjax(URL, "Get",
+                                                actionSuccessUpdatePage);
+                                        console
+                                                .log("*****runJson*** : "
+                                                        + acfsObj
+                                                                .runJsonAjax(
+                                                                        URL,
+                                                                        "Get",
+                                                                        actionSuccessUpdatePage));
+                                    }
+                                });
+            },
+            getURLParams : function() {
+                var match, pl = /\+/g, // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g, decode = function(s) {
+                    return decodeURIComponent(s.replace(pl, " "));
+                }, query = window.location.search.substring(1);
+
+                urlParams = {};
+                while (match = search.exec(query))
+                    urlParams[decode(match[1])] = decode(match[2]);
+
+            },
+            enableLoading : function() {
+                var $loading = $('#loadingDiv').hide();
+                $(document).ajaxStart(function() {
+                    $loading.show();
+                }).ajaxStop(function() {
+                    $loading.hide();
+                });
+            },
+            CreateURL : function(passedUrl) {
+                url = passedUrl;
+                $("#ds_inputFields :input").each(function() 
+                {
+                    if($(this).val()!='')
+                    {
+                        url = url + $(this).attr("id") + "=";
+                        url = url + $(this).val() + "&";
+                    }
+                });
+                /*$("#ds_inputFields").children().children("div").each(function () {
+                    url = url + $(this).attr("id") + "=";
+                    $(this).children("div").children("div").children("input").each(function () {
+                       url = url + $(this).val() + "&";
+                    });
+                 });
+                 */
+                return encodeURI(url);
+            },
+            runJsonAjax : function(url, type, callback) {
+
+                var obj = $.ajax({
+                    type : type,
+                    url : url,
+                    success : callback,
+                    async: true,
+                    error : function(xhr, status, error) {
+                        //alert(error + status + xhr);
+                        $('#ds_resultsSet').html('<div class="ds_error">No results were found</div>');
+                    }
+                });
+                return obj;
+            },
+
+            runSearch : function(pPageSize, pPageNumber) {
+                if(!acfsObj.checkEmptySearchFields()){
+                    if (pPageSize == 0) {
+                        currentPage = 1;
+                        //URL = acfsObj.CreateURL('https://communityacc-developer-edition.na17.force.com' + domainNameValue + '/apex/DynamicQueryResultsPageJson?name=User&pagesize=10&pagenumber=1&');
+                        URL = acfsObj.CreateURL('/' + domainNameValue + '/DynamicQueryResultsPageJson?name=Job&sort='
+                                        + sortParam + '&');
+                        acfsObj.runJsonAjax(URL, "Get", actionSuccess);
+                    } else {
+                        numberOfRecordsToDisplay = pPageSize;
+                        currentActivePage = pPageNumber;
+                        URL = acfsObj.CreateURL('/' + domainNameValue +'/apex/DynamicQueryResultsPageJson?name=Job&'
+                                        + 'pagesize='
+                                        + pPageSize
+                                        + '&pagenumber=' + pPageNumber + '&');
+                        acfsObj.runJsonAjax(URL, "Get", actionSuccessPagination);
+                    }
+                    console.log(URL);
+                }else{
+                    actionNotValid();   
+                    alert("Please Enter Search Value");
+                }
+            },
+
+            clearfields : function()
+            {
+                $('#ds_inputFields :input:not(:button)').val("");
+            },
+            
+            checkEmptySearchFields : function(){
+                var textFields = $('#ds_inputFields').find('input[type=text],textarea,select');
+                var countTextValues = true;
+                for(i = 0; i < textFields.length ; i++){
+                    if($(textFields[i]).val() != ''){
+                        countTextValues = false;
+                    }
+                }//end for
+                return countTextValues;
+            }
+            
+        };
+    </script>
+    <div class="ds_webContent"><apex:outputText value="{!communityWebContent.Page_Content__c}" escape="false"/></div>
+    <div id="content" class="ds_content">
+        <div class="ds_toolpanel">
+            <div id="ds_inputFields" class="ds_inputFields">
+                <apex:outputText value="{!inputFieldsHTML}" escape="false" />
+            </div>
+            <div class="ds_buttons">
+                <input type="button" value="Search" onClick="acfsObj.runSearch(0,0)"></input>
+                <a onClick="acfsObj.clearfields()">Clear All</a>
+            </div>
+        </div>
+        <div class="ds_results">
+            <div class="ds_innerWrapper">
+                <div id="ds_sort" class="ds_sort"></div>
+                <div id="ds_resultsSet" class="ds_resultsSet"></div>
+                <div id="ds_count" class="ds_count"></div>
+                <div id="ds_pagination" class="ds_pagination"></div>
+            </div>
+        </div>
+    </div>
+</apex:page>

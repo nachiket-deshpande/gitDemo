@@ -1,0 +1,13 @@
+<apex:page >
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"/>
+	
+	<script type="text/javascript"> 
+	    $(document).on('click', 'a', function(e){
+	     e.preventDefault();
+	     e.stopImmediatePropagation();
+	     return false;
+		});
+	</script>
+
+	<chatter:feedWithFollowers entityId="{!$User.Id}"/> 
+</apex:page>
